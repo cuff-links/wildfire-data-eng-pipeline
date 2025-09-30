@@ -73,7 +73,7 @@ class EksSchedulerStack(Stack):
             self,
             "AstronomerEksCluster",
             name=cluster_name,
-            version="1.28",
+            version="1.31",
             role_arn=cluster_role.role_arn,
             resources_vpc_config=eks.CfnCluster.ResourcesVpcConfigProperty(
                 endpoint_private_access=True,

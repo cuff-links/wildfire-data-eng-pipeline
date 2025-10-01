@@ -73,7 +73,7 @@ class EksSchedulerStack(Stack):
             self,
             "AstronomerEksCluster",
             name=cluster_name,
-            version="1.31",
+            version="1.34",
             role_arn=cluster_role.role_arn,
             resources_vpc_config=eks.CfnCluster.ResourcesVpcConfigProperty(
                 endpoint_private_access=True,
@@ -101,12 +101,10 @@ class EksSchedulerStack(Stack):
             )
         )
 
-        nodegroup_name = "AstronomerWorkers"
         nodegroup = eks.CfnNodegroup(
             self,
             "AstronomerWorkers",
             cluster_name=cluster_name,
-            nodegroup_name=nodegroup_name,
             node_role=node_role.role_arn,
             subnets=private_subnet_ids,
             scaling_config=eks.CfnNodegroup.ScalingConfigProperty(
@@ -114,7 +112,8 @@ class EksSchedulerStack(Stack):
                 max_size=max_node_capacity,
                 min_size=0,
             ),
-            instance_types=["m6i.large"],
+            instance_types=["t3.medium"],
+            ami_type="AL2023_x86_64_STANDARD",
             disk_size=80,
         )
         nodegroup.node.add_dependency(cluster)

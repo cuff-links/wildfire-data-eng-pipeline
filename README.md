@@ -87,8 +87,9 @@ wildfire-monitor/
 > This project uses **Astronomer's Remote Execution Agents** to run Airflow tasks remotely in an EKS cluster.
 
 ### Prerequisites
-- [x] AWS EKS cluster and VPC created
-- [x] S3 bucket created for data lake
+- [ ] Used SDK to build automated EKS cluster deploy and teardown. 
+- [ ] AWS EKS cluster and VPC created
+- [ ] S3 bucket created for data lake
 - [ ] IAM roles configured for Agent access to S3 + Secrets Manager
 
 ### Setup Checklist

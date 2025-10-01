@@ -13,6 +13,7 @@ from aws_cdk import (
     aws_lambda as lambda_,
     aws_logs as logs,
     aws_scheduler as scheduler,
+    aws_secretsmanager as secretsmanager,
 )
 from constructs import Construct
 
@@ -73,7 +74,7 @@ class EksSchedulerStack(Stack):
             self,
             "AstronomerEksCluster",
             name=cluster_name,
-            version="1.34",
+            version="1.33",
             role_arn=cluster_role.role_arn,
             resources_vpc_config=eks.CfnCluster.ResourcesVpcConfigProperty(
                 endpoint_private_access=True,
@@ -118,6 +119,14 @@ class EksSchedulerStack(Stack):
         )
         nodegroup.node.add_dependency(cluster)
 
+        agent_secret = secretsmanager.Secret(
+            self,
+            "RemoteExecutionAgentSecret",
+            description="Astronomer remote execution agent credentials",
+            removal_policy=cdk.RemovalPolicy.RETAIN,
+        )
+        agent_secret.grant_read(node_role)
+
         scaler_role = iam.Role(
             self,
             "NodegroupScalerRole",
@@ -158,10 +167,12 @@ class EksSchedulerStack(Stack):
         start_payload: Dict[str, Any] = {
             "desiredCapacity": start_desired_capacity,
             "minCapacity": start_min_capacity,
+            "maxCapacity": max_node_capacity,
         }
         stop_payload: Dict[str, Any] = {
             "desiredCapacity": 0,
             "minCapacity": 0,
+            "maxCapacity": 0,
         }
 
         scheduler_role = iam.Role(
@@ -205,6 +216,13 @@ class EksSchedulerStack(Stack):
                 role_arn=scheduler_role.role_arn,
                 input=json.dumps(stop_payload),
             ),
+        )
+
+        cdk.CfnOutput(
+            self,
+            "RemoteExecutionAgentSecretArn",
+            value=agent_secret.secret_arn,
+            description="Secrets Manager ARN for the Astronomer remote execution agent credentials.",
         )
 
         region_placeholder = "${AWS::Region}"

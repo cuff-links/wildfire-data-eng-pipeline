@@ -33,7 +33,8 @@ def on_event(event: Dict[str, Any], _context: Any) -> Dict[str, Any]:
 
     desired_capacity = _coerce_capacity(event.get("desiredCapacity"), default=0)
     min_capacity = _coerce_capacity(event.get("minCapacity"), default=desired_capacity)
-    max_capacity = max(_MAX_CAPACITY, desired_capacity)
+    requested_max = _coerce_capacity(event.get("maxCapacity"), default=_MAX_CAPACITY)
+    max_capacity = max(desired_capacity, requested_max)
 
     _LOGGER.info(
         "Updating nodegroup %s/%s to desired=%s, min=%s, max=%s",

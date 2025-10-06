@@ -21,7 +21,7 @@ cdk deploy
 
 ### What gets created
 - VPC with public and private subnets for the cluster
-- EKS cluster (v1.33) with a managed node group using `t3.medium` nodes and the `AL2023_x86_64_STANDARD` AMI
+- EKS cluster (v1.33) with a managed spot node group using `t3.small` nodes and the `AL2023_x86_64_STANDARD` AMI
 - Lambda function that adjusts node-group capacity
 - EventBridge rules that invoke the Lambda at 9am/9pm America/New_York
 - AWS Secrets Manager secret earmarked for Astronomer remote execution credentials

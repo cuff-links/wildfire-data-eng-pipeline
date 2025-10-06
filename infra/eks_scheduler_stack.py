@@ -113,7 +113,8 @@ class EksSchedulerStack(Stack):
                 max_size=max_node_capacity,
                 min_size=0,
             ),
-            instance_types=["t3.medium"],
+            capacity_type="SPOT",
+            instance_types=["t3.small"],
             ami_type="AL2023_x86_64_STANDARD",
             disk_size=80,
         )

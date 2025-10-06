@@ -21,6 +21,7 @@ def test_cluster_and_nodegroup_created() -> None:
         "AWS::EKS::Nodegroup",
         assertions.Match.object_like(
             {
+                "CapacityType": "SPOT",
                 "ScalingConfig": {
                     "DesiredSize": 0,
                     "MaxSize": 4,
@@ -112,10 +113,13 @@ def test_scheduler_schedules_timezone_and_payload() -> None:
                             }
                         ),
                         "Input": assertions.Match.serialized_json(
-                            {
-                                "desiredCapacity": 3,
-                                "minCapacity": 2,
-                            }
+                            assertions.Match.object_like(
+                                {
+                                    "desiredCapacity": 3,
+                                    "minCapacity": 2,
+                                    "maxCapacity": 4,
+                                }
+                            )
                         ),
                     }
                 ),
@@ -132,10 +136,13 @@ def test_scheduler_schedules_timezone_and_payload() -> None:
                 "Target": assertions.Match.object_like(
                     {
                         "Input": assertions.Match.serialized_json(
-                            {
-                                "desiredCapacity": 0,
-                                "minCapacity": 0,
-                            }
+                            assertions.Match.object_like(
+                                {
+                                    "desiredCapacity": 0,
+                                    "minCapacity": 0,
+                                    "maxCapacity": 0,
+                                }
+                            )
                         )
                     }
                 ),
